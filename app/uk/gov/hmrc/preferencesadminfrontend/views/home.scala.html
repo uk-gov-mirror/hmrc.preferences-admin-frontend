@@ -54,7 +54,9 @@
                 </li>
             }
 
-            @if(TemplateHelper.validateRole(request.session, "isAdmin") || TemplateHelper.validateRole(request.session, "isGeneric")) {
+            @if((TemplateHelper.validateRole(request.session, "isAdmin")
+                || TemplateHelper.validateRole(request.session, "isGeneric"))
+                    && !TemplateHelper.validateRole(request.session, "isSols")) {
                 <li class="govuk-task-list__item govuk-task-list__item--with-link">
                     <a class="govuk-link govuk-task-list__link" href="/paperless/admin/csv-upload-bulk-opt-outs">Bulk Opt Out</a>
                 </li>

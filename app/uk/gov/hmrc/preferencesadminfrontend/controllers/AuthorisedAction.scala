@@ -29,14 +29,31 @@ class AuthorisedAction @Inject() (loginService: LoginService, val controllerComp
 
   def async(block: Request[AnyContent] => User => Future[Result]): Action[AnyContent] = async(Generic)(block)
 
-  def async(role: Role)(block: Request[AnyContent] => User => Future[Result]): Action[AnyContent] =
+  def async(role: Role)(
+    block: Request[AnyContent] => User => Future[Result]
+  ): Action[AnyContent] =
     Action.async { implicit request =>
       val isAdmin = request.session.get("isAdmin").getOrElse("false").toBoolean
       val user = request.session.get(User.sessionKey).map(name => User(name, ""))
 
       user match {
-        case Some(user) if loginService.hasRequiredRole(user, role) || isAdmin => block(request)(user)
-        case _ => Future.successful(play.api.mvc.Results.Redirect(routes.LoginController.showLoginPage()))
+        case Some(user) if hasRequiredRoleOrBulkOptOutsAccess(user, role) || isAdmin => block(request)(user)
+        case _ => Future.successful(Redirect(routes.LoginController.showLoginPage()))
       }
     }
+
+  private def hasRequiredRoleOrBulkOptOutsAccess(user: User, role: Role)(implicit request: Request[_]) =
+    if (request.uri.equals(routes.CsvUploadBulkOptOutsController.showBulkOptOutsUploadPage.url)) {
+      loginService.hasRequiredRole(user, role) && hasAccessForCsvUploadBulkOptOuts
+    } else {
+      loginService.hasRequiredRole(user, role)
+    }
+
+  private def hasAccessForCsvUploadBulkOptOuts(implicit request: Request[_]): Boolean = {
+    val isAdmin = request.session.get("isAdmin").getOrElse("false").toBoolean
+    val isGeneric = request.session.get("isGeneric").getOrElse("false").toBoolean
+    val isSols = request.session.get("isSols").getOrElse("false").toBoolean
+
+    (isGeneric || isAdmin) && (!isSols)
+  }
 }

@@ -85,6 +85,28 @@ class HomeViewSpec extends ViewSpecBase {
 
       liElements.get(0).text() shouldBe "Paperless Admin"
     }
+
+    "do not display the bulk opt-outs option for a user which has both sols and generic roles" in {
+      implicit val req: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+        .withSession((User.sessionKey, "solsUser"), ("isSols", "true"), ("isAdmin", "false"), ("isGeneric", "true"))
+
+      viewAsDocument.getElementsByTag("h1").text() shouldBe "Home"
+      viewAsDocument
+        .getElementsByTag("p")
+        .get(0)
+        .text() shouldBe "You can access the following control pages by clicking on the appropriate link"
+
+      val ulElelemt: Element = viewAsDocument.getElementsByTag("ul").get(0)
+      val liElements = ulElelemt.getElementsByTag("li")
+
+      liElements.get(0).text() shouldBe "Paperless Admin"
+
+      viewAsDocument.text() should not include "Bulk Opt Out"
+
+      intercept[IndexOutOfBoundsException] {
+        liElements.get(1).text()
+      }
+    }
   }
 
   private def viewAsDocument(implicit request: FakeRequest[AnyContentAsEmpty.type]) = {
