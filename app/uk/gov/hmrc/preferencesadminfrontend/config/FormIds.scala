@@ -163,6 +163,8 @@ object FormIds {
     "LEPP1",
     "LEPP2",
     "LEPP3",
-    "LEPP4"
+    "LEPP4",
+    "CH(A)1700",
+    "CH(A)1708"
   )
 }
