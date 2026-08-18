@@ -21,10 +21,9 @@ import org.scalatestplus.play.PlaySpec
 class FormIdsSpec extends PlaySpec {
 
   "configList" should {
+    val formIdsConfig: Seq[String] = FormIds.configList
 
     "contain ITSA form ids" in {
-      val formIdsConfig: Seq[String] = FormIds.configList
-
       val itsaFormIds: List[String] =
         List(
           "LPP1A_ITSA",
@@ -44,8 +43,6 @@ class FormIdsSpec extends PlaySpec {
     }
 
     "contain NIRef form ids" in {
-      val formIdsConfig: Seq[String] = FormIds.configList
-
       val niRefFormIds: List[String] =
         List(
           "NIRef1",
@@ -60,8 +57,6 @@ class FormIdsSpec extends PlaySpec {
     }
 
     "contain Low Earners Pension Payment (LEPP) form ids" in {
-      val formIdsConfig: Seq[String] = FormIds.configList
-
       val lEPPFormIds: List[String] = List("LEPP1", "LEPP2", "LEPP3", "LEPP4")
 
       lEPPFormIds.foreach { id =>
@@ -70,13 +65,15 @@ class FormIdsSpec extends PlaySpec {
     }
 
     "contain CH(A)1700 and CH(A)1708 form ids" in {
-      val formIdsConfig: Seq[String] = FormIds.configList
-
       val CHAFormIds: List[String] = List("CH(A)1700", "CH(A)1708")
 
       CHAFormIds.foreach { id =>
         assert(formIdsConfig.contains(id))
       }
+    }
+
+    "contain VPD formId" in {
+      assert(formIdsConfig.contains("VPD1"))
     }
 
     "not contain welsh form ids" in {
