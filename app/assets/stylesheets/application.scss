@@ -3,7 +3,7 @@ $hmrc-assets-path: "/paperless/admin/hmrc-frontend/assets/";
 $govuk-suppressed-warnings: "govuk-typography-scale-14";
 $govuk-suppressed-warnings: ("libsass", "import-using-all", "legacy-organisation-colours");
 
-@import "lib/govuk-frontend/dist/govuk/all";
+@import "lib/govuk-frontend/dist/govuk/index.import";
 @import "lib/hmrc-frontend/hmrc/all";
 
 $govuk-global-styles: true;
